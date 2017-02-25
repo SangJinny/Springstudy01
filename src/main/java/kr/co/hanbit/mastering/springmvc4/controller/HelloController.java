@@ -20,7 +20,7 @@ public class HelloController {
     @Autowired
     private Twitter twitter;
 
-    @RequestMapping("/")
+    @RequestMapping("/asdfaasdf")
     public String hello(@RequestParam(defaultValue = "masterSpringMVC4") String search, Model model) {
         SearchResults searchResults = twitter.searchOperations().search(search);
         List<Tweet> tweets = searchResults.getTweets();
