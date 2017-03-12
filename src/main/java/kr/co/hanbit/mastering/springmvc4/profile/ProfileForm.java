@@ -1,17 +1,32 @@
 package kr.co.hanbit.mastering.springmvc4.profile;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+//import lombok.Data;
 /**
  * Created by Jeon on 2017-03-01.
  */
-public class ProfileForm {
 
+
+public class ProfileForm {
+    @Size(min = 2)
     private String twitterHandle;
+
+    @Email
+    @NotEmpty
     private String email;
+
+    @NotNull
     private LocalDate birthDate;
+
+    @NotEmpty
     private List<String> tastes = new ArrayList<>();
 
     public String getTwitterHandle() {
