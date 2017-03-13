@@ -1,5 +1,6 @@
 package kr.co.hanbit.mastering.springmvc4.profile;
 
+import kr.co.hanbit.mastering.springmvc4.date.PastLocalDate;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -24,6 +25,7 @@ public class ProfileForm {
     private String email;
 
     @NotNull
+    @PastLocalDate
     private LocalDate birthDate;
 
     @NotEmpty
