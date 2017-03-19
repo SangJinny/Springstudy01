@@ -1,6 +1,7 @@
 package kr.co.hanbit.mastering.springmvc4.config;
 
 import kr.co.hanbit.mastering.springmvc4.date.KRLocalDateFormatter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -22,6 +23,7 @@ import java.util.logging.Filter;
  * Created by Jeon on 2017-03-01.
  */
 @Configuration
+@EnableConfigurationProperties({PicturesUploadProperties.class})
 public class WebConfiguration extends WebMvcConfigurerAdapter{
 
     @Override
