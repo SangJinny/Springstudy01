@@ -1,6 +1,7 @@
 package kr.co.hanbit.mastering.springmvc4.profile;
 
 import kr.co.hanbit.mastering.springmvc4.date.KRLocalDateFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,6 +20,22 @@ import java.util.Locale;
 
 @Controller
 public class ProfileController {
+
+    private UserProfileSession userProfileSession; // 커스터마이징 세션
+
+    @Autowired
+    public ProfileController(UserProfileSession userProfileSession) {
+        /* 생성자 주입
+         * 빈이 인스턴스화 되기 전에 생성자의 인자로 주입된다.
+         */
+        this.userProfileSession = userProfileSession;
+    }
+
+    @ModelAttribute
+    public ProfileForm getProfileForm() {
+
+        return userProfileSession.toForm();
+    }
 
     @ModelAttribute("dateFormat")
     public String localeFormat(Locale locale) {
@@ -40,6 +57,7 @@ public class ProfileController {
         }
         //log.debug("ProfileForm: {}", profileForm);
         //System.out.println("save ok"+profileForm);
+        userProfileSession.saveForm(profileForm);
         return "redirect:/profile";
     }
 

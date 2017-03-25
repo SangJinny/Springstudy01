@@ -2,19 +2,20 @@ package kr.co.hanbit.mastering.springmvc4.profile;
 
 import kr.co.hanbit.mastering.springmvc4.config.PicturesUploadProperties;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.codehaus.groovy.tools.shell.util.MessageSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
@@ -30,8 +31,18 @@ public class PictureUploadController {
 
     private final Resource pictureDir;
     private final Resource anonymousPicture;
-    @Autowired
+    private MessageSource messageSource;
 
+    @Autowired
+    public PictureUploadController(PicturesUploadProperties picturesUploadProperties,
+                                   MessageSource messageSource) {
+        this.pictureDir = picturesUploadProperties.getUploadPath();
+        this.anonymousPicture = picturesUploadProperties.getAnonymousPicture();
+        this.messageSource = messageSource;
+    }
+
+
+    @Autowired
     public PictureUploadController(PicturesUploadProperties picturesUploadProperties) {
         this.pictureDir = picturesUploadProperties.getUploadPath();
         this.anonymousPicture = picturesUploadProperties.getAnonymousPicture();
@@ -39,6 +50,14 @@ public class PictureUploadController {
 
    // public static final Resource PICTURES_DIR = new FileSystemResource("./pictures");
 
+
+    @ExceptionHandler(IOException.class)
+    public ModelAndView handleIoException (IOException exception) {
+
+        ModelAndView modelAndView = new ModelAndView("profile/uploadPage");
+        modelAndView.addObject("error", messageSource.getMessage("upload.io.exception",null, locale));// exception.getMessage());
+        return modelAndView;
+    }
     @ModelAttribute("picturePath")
     public Resource picturePath() {
         /* ModelAttribute 어노테이션이 선언된 메소드를 통해
@@ -82,6 +101,15 @@ public class PictureUploadController {
         response.setHeader("Content-Type", URLConnection.guessContentTypeFromName(classPathResource.getFilename()));
         IOUtils.copy(classPathResource.getInputStream(), response.getOutputStream());*/
 
+    }
+
+    @RequestMapping("upload-error")
+    public ModelAndView onUploadError(HttpServletRequest request) {
+
+        ModelAndView modelAndView = new ModelAndView("profile/uploadPage");
+        modelAndView.addObject("error", messageSource.getMessage("upload.file.too.big", null, locale));
+        //modelAndView.addObject("error", request.getAttribute(WebUtils.ERROR_MESSAGE_ATTRIBUTE));
+        return modelAndView;
     }
 
     private Resource copyFileToPictures(MultipartFile file) throws IOException {
