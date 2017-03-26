@@ -2,8 +2,9 @@ package kr.co.hanbit.mastering.springmvc4.profile;
 
 import kr.co.hanbit.mastering.springmvc4.config.PicturesUploadProperties;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.codehaus.groovy.tools.shell.util.MessageSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -19,60 +20,60 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
+import java.util.Locale;
+
 
 /**
  * Created by Jeon on 2017-03-19.
  */
-// onUpload와 onUploadedPicture가 다른 요청임에도 각각의 메소드에서 모델이 초기화되므로 세션으로 관리.
 @Controller
 @SessionAttributes("picturePath")
 public class PictureUploadController {
-
+    /*
+     * 업로드된 파일을 디스크에 저장하고 업로드 오류를 제어한다.
+     * */
 
     private final Resource pictureDir;
     private final Resource anonymousPicture;
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
+    private final UserProfileSession userProfileSession;
 
     @Autowired
     public PictureUploadController(PicturesUploadProperties picturesUploadProperties,
-                                   MessageSource messageSource) {
+                                   MessageSource messageSource,
+                                   UserProfileSession userProfileSession) {
         this.pictureDir = picturesUploadProperties.getUploadPath();
         this.anonymousPicture = picturesUploadProperties.getAnonymousPicture();
         this.messageSource = messageSource;
-    }
-
-
-    @Autowired
-    public PictureUploadController(PicturesUploadProperties picturesUploadProperties) {
-        this.pictureDir = picturesUploadProperties.getUploadPath();
-        this.anonymousPicture = picturesUploadProperties.getAnonymousPicture();
+        this.userProfileSession = userProfileSession;
     }
 
    // public static final Resource PICTURES_DIR = new FileSystemResource("./pictures");
 
-
     @ExceptionHandler(IOException.class)
-    public ModelAndView handleIoException (IOException exception) {
+    public ModelAndView handleIoException (/*IOException exception*/ Locale locale) {
 
         ModelAndView modelAndView = new ModelAndView("profile/uploadPage");
         modelAndView.addObject("error", messageSource.getMessage("upload.io.exception",null, locale));// exception.getMessage());
         return modelAndView;
     }
+    /*
     @ModelAttribute("picturePath")
     public Resource picturePath() {
-        /* ModelAttribute 어노테이션이 선언된 메소드를 통해
-        *  모델어트리뷰트를 쉽게 생성할 수 있다.
-        *  아래 리턴값을 주입한다고 보면 된다.*/
+        // ModelAttribute 어노테이션이 선언된 메소드를 통해
+        // 모델어트리뷰트를 쉽게 생성할 수 있다.
+        // 아래 리턴값을 주입한다고 보면 된다.
         return anonymousPicture;
     }
-
+    */
+    /*
     @RequestMapping("/upload")
     public String uploadPage() {
 
         return "profile/uploadPage";
     }
-
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    */
+    @RequestMapping(value = "/profile", method = RequestMethod.POST)
     public String onUpload(MultipartFile file, RedirectAttributes redirectAttrs, Model model) throws IOException {
         /*
         *  MultipartFile 인터페이스에 사용자가 업로드한 파일이 주입됨
@@ -81,21 +82,27 @@ public class PictureUploadController {
         if(file.isEmpty() || !isImage(file)) {
 
             redirectAttrs.addFlashAttribute("error", "Incorrect file. Please upload a picture");
-            return "redirect:/upload";
+            return "redirect:/profile";
         }
 
         Resource picturePath = copyFileToPictures(file);
-        model.addAttribute("picturePath", picturePath);
+        userProfileSession.setPicturePath(picturePath);
+        //model.addAttribute("picturePath", picturePath);
 
 
-        return "profile/uploadPage";
+        return "redirect:profile";
     }
 
     @RequestMapping(value="/uploadedPicture")
-    public void getUploadedPicture(HttpServletResponse response, @ModelAttribute("picturePath") Resource picturePath) throws IOException {
+    public void getUploadedPicture(HttpServletResponse response
+                                   /* ,@ModelAttribute("picturePath") Resource picturePath*/) throws IOException {
+        Resource picturePath = userProfileSession.getPicturePath();
+        if(picturePath == null) {
+            picturePath = anonymousPicture;
+        }
 
         response.setHeader("Content-Type", URLConnection.guessContentTypeFromName(picturePath.toString())/*(anonymousPicture.getFilename())*/);
-        IOUtils.copy(anonymousPicture.getInputStream(), response.getOutputStream());
+        IOUtils.copy(picturePath.getInputStream(), response.getOutputStream());
 
         /*ClassPathResource classPathResource = new ClassPathResource("/images/anonymous.png");
         response.setHeader("Content-Type", URLConnection.guessContentTypeFromName(classPathResource.getFilename()));
@@ -104,7 +111,7 @@ public class PictureUploadController {
     }
 
     @RequestMapping("upload-error")
-    public ModelAndView onUploadError(HttpServletRequest request) {
+    public ModelAndView onUploadError(/*HttpServletRequest request*/ Locale locale) {
 
         ModelAndView modelAndView = new ModelAndView("profile/uploadPage");
         modelAndView.addObject("error", messageSource.getMessage("upload.file.too.big", null, locale));
@@ -116,7 +123,7 @@ public class PictureUploadController {
 
         String fileExtension = getFileExtension(file.getOriginalFilename());
         //String filename = file.getOriginalFilename();
-        File tempFile = File.createTempFile("pic", getFileExtension(fileExtension), pictureDir.getFile());
+        File tempFile = File.createTempFile("pic", fileExtension, pictureDir.getFile());
         /* try... with 블록*/
         try(InputStream in = file.getInputStream();
             OutputStream out = new FileOutputStream(tempFile)) {

@@ -15,9 +15,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.util.UrlPathHelper;
 
 import java.nio.charset.Charset;
 import java.time.LocalDate;
@@ -83,6 +85,15 @@ public class WebConfiguration extends WebMvcConfigurerAdapter{
         return container -> container.addErrorPages(new ErrorPage(MultipartException.class, "/upload-error"));
     }
     */
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        /*
+         * Spring MVC는 기본으로 URL에 세미콜론으로 이어진 모든 문자를 제거한다.
+         * 이를 비활성화 하여 행렬변수를 URL에 활용하기 위해 이 메소드를 재정의한다. */
+        UrlPathHelper urlPathHelper = new UrlPathHelper();
+        urlPathHelper.setRemoveSemicolonContent(false);
+        configurer.setUrlPathHelper(urlPathHelper);
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

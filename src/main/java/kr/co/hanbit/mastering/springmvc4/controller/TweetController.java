@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
  */
 @Controller
 public class TweetController {
+    /* 미사용 컨트롤러 */
     @Autowired
     private Twitter twitter;
 

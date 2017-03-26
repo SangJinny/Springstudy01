@@ -3,10 +3,15 @@ package kr.co.hanbit.mastering.springmvc4.profile;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +36,7 @@ public class UserProfileSession implements Serializable{
     private String email;
     private LocalDate birthDate;
     private List<String> tastes = new ArrayList<>();
+    private URL picturePath;
 
     public void saveForm(ProfileForm profileForm) {
 
@@ -48,5 +54,17 @@ public class UserProfileSession implements Serializable{
         profileForm.setBirthDate(birthDate);
         profileForm.setTastes(tastes);
         return profileForm;
+    }
+
+    public void setPicturePath(Resource picturePath) throws IOException {
+        this.picturePath = picturePath.getURL();
+    }
+
+    public Resource getPicturePath() throws MalformedURLException {
+        return picturePath == null ? null : new UrlResource(picturePath);
+    }
+
+    public List<String> getTastes() {
+        return this.tastes;
     }
 }
