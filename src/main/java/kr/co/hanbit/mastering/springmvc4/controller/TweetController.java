@@ -18,9 +18,11 @@ import java.util.stream.Collectors;
 /**
  * Created by Jeon on 2017-02-19.
  */
+/* 미사용 컨트롤러 */
+/*
 @Controller
 public class TweetController {
-    /* 미사용 컨트롤러 */
+
     @Autowired
     private Twitter twitter;
 
@@ -50,3 +52,4 @@ public class TweetController {
         return "redirect:result";
     }
 }
+*/
