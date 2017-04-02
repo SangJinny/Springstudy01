@@ -24,6 +24,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.util.UrlPathHelper;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.nio.charset.Charset;
 import java.time.LocalDate;
@@ -33,6 +34,7 @@ import java.util.logging.Filter;
  * Created by Jeon on 2017-03-01.
  */
 @Configuration
+@EnableSwagger2 //swagger-springmvc 의존성 추가 후 사용
 @EnableConfigurationProperties({PicturesUploadProperties.class})
 public class WebConfiguration extends WebMvcConfigurerAdapter{
 

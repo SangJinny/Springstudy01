@@ -31,8 +31,13 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-social-twitter')
+	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.webjars:materializecss:0.96.0')
 	compile('org.webjars:jquery:2.1.4')
 	compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310')
+	compile('io.springfox:springfox-swagger2:2.4.0')
+	compile('io.springfox:springfox-swagger-ui:2.4.0')
+	//compile('io.fasterxml.jackson.dataformat:jackson-dataformat-xml') // 클라이언트의 accept헤더에 따른 json or xml처리를 위함
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
