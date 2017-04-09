@@ -20,7 +20,7 @@
             </ul>
         </div>
     </nav>
-    <div>
+    <div sec:authorize="isAuthenticated()"> <!-- 로그인 사용자에게만 보여준다. -->
         Your are logged as <b sec:authentication="name" /> with roles <span sec:authentication="authorities" /> -
         <form th:action="@{/logout}" method="post" style="display: inline-block">
             <input type="submit" value="Sign Out"/>

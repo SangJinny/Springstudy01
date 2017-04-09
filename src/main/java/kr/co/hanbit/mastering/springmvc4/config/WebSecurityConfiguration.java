@@ -18,11 +18,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http
                 .formLogin()
+                .loginPage("/login") // 사용자정의된 로그인 페이지
                 .defaultSuccessUrl("/profile")
                 .and()
                 .logout().logoutSuccessUrl("/login")
                 .and()
-                .authorizeRequests().antMatchers("/webjars/**", "/login").permitAll()
+                .authorizeRequests().antMatchers("/webjars/**", "/login", "/signin/**", "/signup").permitAll()
                 .anyRequest().authenticated();
     }
 }

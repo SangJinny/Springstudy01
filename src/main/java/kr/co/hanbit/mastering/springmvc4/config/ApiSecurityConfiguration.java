@@ -22,7 +22,7 @@ public class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter{
      * APISecurityConfiguration: 첫 번째 구성이며, 기본 인증으로 RESTful 엔드포인트를 보호한다.
      * WebSecurityConfiguration: 애플리케이션의 나머지 부분에 대한 로그인 폼을 구성한다.
      * */
-    
+
     @Autowired
     public void configureAuth(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()

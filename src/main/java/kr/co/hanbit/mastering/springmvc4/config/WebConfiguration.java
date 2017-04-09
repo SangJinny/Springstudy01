@@ -15,6 +15,10 @@ import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.social.connect.ConnectionFactoryLocator;
+import org.springframework.social.connect.UsersConnectionRepository;
+import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.LocaleResolver;
@@ -26,6 +30,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.util.UrlPathHelper;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.activation.DataSource;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.logging.Filter;
@@ -102,7 +107,14 @@ public class WebConfiguration extends WebMvcConfigurerAdapter{
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         return  objectMapper;
     }
-
+/*
+    @Bean
+    @Primary
+    public UsersConnectionRepository getUsersConnectionRepository(javax.sql.DataSource dataSource,
+                                                                  ConnectionFactoryLocator connectionFactoryLocator) {
+        return new JdbcUsersConnectionRepository(dataSource, connectionFactoryLocator, Encryptors.noOpText());
+    }
+  */
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
         /*
