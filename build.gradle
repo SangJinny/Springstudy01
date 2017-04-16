@@ -28,6 +28,10 @@ repositories {
 
 
 dependencies {
+	
+	compile('org.springframework.boot:spring-boot-starter-test') // 일반 테스트
+
+
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-social-twitter')
@@ -41,4 +45,6 @@ dependencies {
 	//compile('io.fasterxml.jackson.dataformat:jackson-dataformat-xml') // 클라이언트의 accept헤더에 따른 json or xml처리를 위함
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('org.assertj:assertj-core:3.0.0') // RESTful 테스트
+	testCompile('com.jayway.jsonpath:json-path') // RESTful 테스트
 }

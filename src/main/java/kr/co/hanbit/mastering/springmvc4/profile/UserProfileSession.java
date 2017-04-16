@@ -60,6 +60,10 @@ public class UserProfileSession implements Serializable{
         this.picturePath = picturePath.getURL();
     }
 
+    //테스트를 위해 임시로...
+    public void setTastes(List<String> tastes) {
+        this.tastes = tastes;
+    }
     public Resource getPicturePath() throws MalformedURLException {
         return picturePath == null ? null : new UrlResource(picturePath);
     }
